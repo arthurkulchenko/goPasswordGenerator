@@ -24,9 +24,7 @@ const (
 )
 
 type RandGenParam struct {
-	// generationRange int
 	entity SymbolType
-	uniqueKeys []string
 	dictionary []string
 }
 
@@ -35,9 +33,9 @@ func Generate(config pass_gen.PasswordConfig) string {
 	rand.Seed(time.Now().UnixNano())
 
 	genParams := make([]*RandGenParam, 0)
-	if config.UseDigits { genParams = append(genParams, &RandGenParam{Digit, make([]string, 10), Digits}) }
-	if config.UseLowercase { genParams = append(genParams, &RandGenParam{LowerCase, make([]string, 26), AlphabetLower}) }
-	if config.UseUppercase { genParams = append(genParams, &RandGenParam{UpperCase, make([]string, 26), AlphabetUpper}) }
+	if config.UseDigits { genParams = append(genParams, &RandGenParam{Digit, Digits}) }
+	if config.UseLowercase { genParams = append(genParams, &RandGenParam{LowerCase, AlphabetLower}) }
+	if config.UseUppercase { genParams = append(genParams, &RandGenParam{UpperCase, AlphabetUpper}) }
 
 	for index, _ := range password {
 		if len(genParams) == 0 { break }
