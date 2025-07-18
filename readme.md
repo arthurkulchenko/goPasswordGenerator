@@ -27,8 +27,8 @@ This is a small project and it generates passwords
 2.c. To build and run in container:
 ```bash
   GOOS=linux GOARCH=amd64 go build -o bin/pass_gen
-  podman build -t pass_gen -f docker/Dockerfile .
-  podman run -it pass_gen pass_gen
+  podman build -t pass_gen:latest -f docker/Dockerfile .
+  podman run -it --name pass_gen pass_gen
 ```
 
 ## Usage
