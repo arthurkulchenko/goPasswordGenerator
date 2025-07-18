@@ -30,29 +30,16 @@ func Generate(config pass_gen.PasswordConfig) string {
 	if config.UseUppercase { genParams = append(genParams, RandGenParam{26, UpperCase}) }
 	if config.UseLowercase { genParams = append(genParams, RandGenParam{26, LowerCase}) }
 
-	retry := 0
+	// retry := 0
 	// for index, _ := range password {
-	for {
+	for range password {
 		params := genParams[rand.Intn(len(genParams))]
-		nextSymbol := genNextSymbol(params)
-		if checkUniqueness(nextSymbol, &uniqueKeys) {
-			password[index] = nextSymbol
-		} else {
-			if retry > 59 { break }
-			retry += 1
-		}
-
+		nextSymbol := genNextSymbol(params, &password)
 	}
 	return strings.Join(password, "")
 }
 
-func checkUniqueness(symbol string, uniqueKeys *map[string]int) bool {
-	for k := range m {
-		keys = append(keys, k)
-	}
-}
-
-func genNextSymbol(params RandGenParam) string {
+func genNextSymbol(params RandGenParam, password *[]string) string {
 	var nextSymbol string
 	randomizedNumber := rand.Intn(params.generationRange)
 	switch params.entity {
@@ -63,5 +50,22 @@ func genNextSymbol(params RandGenParam) string {
 		case UpperCase:
 			nextSymbol = strings.ToUpper(string('a' + randomizedNumber))
 	}
+
+	if checkUniqueness(nextSymbol, &uniqueKeys) {
+		password[index] = nextSymbol
+	} else {
+		// if retry > 59 { break }
+		// retry += 1
+	}
+
 	return nextSymbol
 }
+
+func checkUniqueness(symbol string, uniqueKeys *map[string]int) bool {
+
+	keysSlice := make([]string, 0, len(uniqueKeys))
+	for key := range uniqueKeys {
+		keysSlice = append(keysSlice, key)
+	}
+}
+
