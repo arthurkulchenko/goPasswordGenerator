@@ -1,67 +1,54 @@
-package pass_gen
+package generator
 
 import(
 	"pass_gen/pkg/password"
 	"time"
 	"math/rand"
 	"strings"
-	"strconv"
 )
 
-type SymbolType int
-
-const (
-	Digit SymbolType = iota
-	LowerCase
-	UpperCase
-)
-
-type RandGenParam struct {
-	generationRange int
-	entity SymbolType
+var Digits = []string{"0", "1", "2", "3", "4", "5", "6", "7", "8", "9"}
+var AlphabetLower = []string{
+	"a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z",
+}
+var AlphabetUpper = []string{
+	"A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z",
 }
 
-func Generate(config pass_gen.PasswordConfig) string {
-	password := make([]string, config.Length)
-	uniqueKeys := make(map[string]int)
-	rand.Seed(time.Now().UnixNano())
-	genParams := make([]RandGenParam, 0)
-	if config.UseDigits { genParams = append(genParams, RandGenParam{10, Digit}) }
-	if config.UseUppercase { genParams = append(genParams, RandGenParam{26, UpperCase}) }
-	if config.UseLowercase { genParams = append(genParams, RandGenParam{26, LowerCase}) }
+type RandGenParam struct {
+	Dictionary []string
+}
 
-	retry := 0
-	// for index, _ := range password {
-	for {
-		params := genParams[rand.Intn(len(genParams))]
-		nextSymbol := genNextSymbol(params)
-		if checkUniqueness(nextSymbol, &uniqueKeys) {
-			password[index] = nextSymbol
-		} else {
-			if retry > 59 { break }
-			retry += 1
+func Generate(config password.PasswordConfig) string {
+	password := make([]string, config.Length)
+	rand.Seed(time.Now().UnixNano())
+
+	genParams := make([]*RandGenParam, 0)
+	if config.UseDigits { genParams = append(genParams, &RandGenParam{Digits}) }
+	if config.UseLowercase { genParams = append(genParams, &RandGenParam{AlphabetLower}) }
+	if config.UseUppercase { genParams = append(genParams, &RandGenParam{AlphabetUpper}) }
+
+	for index, _ := range password {
+		if len(genParams) == 0 { break }
+
+		paramsIndex := rand.Intn(len(genParams))
+		params := genParams[paramsIndex]
+		if len(params.Dictionary) == 0 {
+			genParams = append(genParams[:paramsIndex], genParams[paramsIndex+1:]...)
+			continue
 		}
 
+		nextSymbol := GenNextSymbol(params)
+		password[index] = nextSymbol
 	}
 	return strings.Join(password, "")
 }
 
-func checkUniqueness(symbol string, uniqueKeys *map[string]int) bool {
-	for k := range m {
-		keys = append(keys, k)
-	}
-}
-
-func genNextSymbol(params RandGenParam) string {
+func GenNextSymbol(params *RandGenParam) string {
+	dic := params.Dictionary
 	var nextSymbol string
-	randomizedNumber := rand.Intn(params.generationRange)
-	switch params.entity {
-		case Digit:
-			nextSymbol = strconv.Itoa(randomizedNumber)
-		case LowerCase:
-			nextSymbol = string('a' + randomizedNumber)
-		case UpperCase:
-			nextSymbol = strings.ToUpper(string('a' + randomizedNumber))
-	}
+	randomizedNumber := rand.Intn(len(dic))
+	nextSymbol = dic[randomizedNumber]
+	params.Dictionary = append(dic[:randomizedNumber], dic[randomizedNumber+1:]...)
 	return nextSymbol
 }

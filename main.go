@@ -1,16 +1,13 @@
 package main
 
 import(
-	"fmt"
 	config "pass_gen/pkg/password"
 	generator "pass_gen/pkg/generator"
 	"github.com/fatih/color"
 )
 
-
-
 func main() {
-	pass_conf := config.PasswordConfig { 0, false, false, false, false, false, false, false }
+	var pass_conf config.PasswordConfig
 	pass_conf.SetLength()
 	pass_conf.WillUseDigits()
 	pass_conf.WillUseUppercase()
@@ -27,5 +24,6 @@ func main() {
 		}
 	}
 
-	fmt.Println(generator.Generate(pass_conf))
+	color.Cyan("Password generated!")
+	color.Green("%v", generator.Generate(pass_conf))
 }
