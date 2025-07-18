@@ -1,5 +1,5 @@
 # Password Generator
-This is a small project and it generates passwords
+This is a small CLI project for generating passwords
 
 ## Table of Contents
 - [Installation](#installation)
