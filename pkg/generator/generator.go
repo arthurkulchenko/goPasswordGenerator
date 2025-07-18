@@ -1,4 +1,4 @@
-package pass_gen
+package generator
 
 import(
 	"pass_gen/pkg/password"
@@ -24,11 +24,11 @@ const (
 )
 
 type RandGenParam struct {
-	entity SymbolType
-	dictionary []string
+	Entity SymbolType
+	Dictionary []string
 }
 
-func Generate(config pass_gen.PasswordConfig) string {
+func Generate(config password.PasswordConfig) string {
 	password := make([]string, config.Length)
 	rand.Seed(time.Now().UnixNano())
 
@@ -42,22 +42,22 @@ func Generate(config pass_gen.PasswordConfig) string {
 
 		paramsIndex := rand.Intn(len(genParams))
 		params := genParams[paramsIndex]
-		if len(params.dictionary) == 0 {
+		if len(params.Dictionary) == 0 {
 			genParams = append(genParams[:paramsIndex], genParams[paramsIndex+1:]...)
 			continue
 		}
 
-		nextSymbol := genNextSymbol(params)
+		nextSymbol := GenNextSymbol(params)
 		password[index] = nextSymbol
 	}
 	return strings.Join(password, "")
 }
 
-func genNextSymbol(params *RandGenParam) string {
-	dic := params.dictionary
+func GenNextSymbol(params *RandGenParam) string {
+	dic := params.Dictionary
 	var nextSymbol string
 	randomizedNumber := rand.Intn(len(dic))
-	switch params.entity {
+	switch params.Entity {
 		case Digit:
 			nextSymbol = dic[randomizedNumber]
 		case LowerCase:
@@ -65,6 +65,6 @@ func genNextSymbol(params *RandGenParam) string {
 		case UpperCase:
 			nextSymbol = strings.ToUpper(string('a' + randomizedNumber))
 	}
-	params.dictionary = append(dic[:randomizedNumber], dic[randomizedNumber+1:]...)
+	params.Dictionary = append(dic[:randomizedNumber], dic[randomizedNumber+1:]...)
 	return nextSymbol
 }

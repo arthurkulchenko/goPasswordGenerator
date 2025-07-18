@@ -1,4 +1,4 @@
-package pass_gen
+package password
 
 import(
 	"fmt"
@@ -12,9 +12,9 @@ type PasswordConfig struct {
 	UseDigits bool
 	UseUppercase bool
 	UseLowercase bool
-	ExcludeAmbigiousDigits bool
-	ExcludeAmbigiousUppercase bool
-	ExcludeAmbigiousLowercase bool
+	// ExcludeAmbiguousDigits bool
+	// ExcludeAmbiguousUppercase bool
+	// ExcludeAmbiguousLowercase bool
 	Valid bool
 }
 
@@ -25,8 +25,7 @@ func (p *PasswordConfig) BoolSum() int {
 
 func (p *PasswordConfig) Validate() {
 	sum := p.BoolSum()
-	//           && p.length > 0
-	if sum > 0 {
+	if sum > 0 && p.Length > 0 {
 		p.Valid = true
 	}
 }
@@ -35,8 +34,7 @@ func (p *PasswordConfig) SetLength() {
 	var userInput string
 	var err error
 	for {
-		fmt.Println("Type number of symbols:")
-		fmt.Print("-> ")
+		color.New(color.FgCyan).Print("Type number of symbols: ")
 		_, _ = fmt.Scanln(&userInput)
 		p.Length, err = strconv.Atoi(userInput)
 		if err != nil {
@@ -54,12 +52,13 @@ func (p *PasswordConfig) SetLength() {
 func (p *PasswordConfig) WillUseDigits() {
 	var userInput string
 	for {
-		fmt.Println("Type 'y' or 'yes' if you want use digits:")
-		fmt.Print("-> ")
+		color.New(color.FgCyan).Print("Type 'y' to use digits:")
 		_, _ = fmt.Scanln(&userInput)
 		decision := strings.ToLower(userInput)
-		if decision == "y" || decision == "yes" {
+		if strings.Contains(strings.ToLower(decision), "y") {
 			p.UseDigits = true
+		} else {
+			color.Yellow("Skipping digits")
 		}
 		break
 	}
@@ -68,12 +67,13 @@ func (p *PasswordConfig) WillUseDigits() {
 func (p *PasswordConfig) WillUseUppercase() {
 	var userInput string
 	for {
-		fmt.Println("Type 'y' or 'yes' if you want use uppercase:")
-		fmt.Print("-> ")
+		color.New(color.FgCyan).Print("Type 'y' to use uppercase: ")
 		_, _ = fmt.Scanln(&userInput)
 		decision := strings.ToLower(userInput)
 		if decision == "y" || decision == "yes" {
 			p.UseUppercase = true
+		} else {
+			color.Yellow("Skipping uppercase")
 		}
 		break
 	}
@@ -82,12 +82,13 @@ func (p *PasswordConfig) WillUseUppercase() {
 func (p *PasswordConfig) WillUseLowercase() {
 	var userInput string
 	for {
-		fmt.Println("Type 'y' or 'yes' if you want use lowercase:")
-		fmt.Print("-> ")
+		color.New(color.FgCyan).Print("Type 'y' to use lowercase: ")
 		_, _ = fmt.Scanln(&userInput)
 		decision := strings.ToLower(userInput)
 		if decision == "y" || decision == "yes" {
 			p.UseLowercase = true
+		} else {
+			color.Yellow("Skipping lowercase")
 		}
 		break
 	}
