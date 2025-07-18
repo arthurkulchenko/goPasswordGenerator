@@ -15,16 +15,7 @@ var AlphabetUpper = []string{
 	"A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z",
 }
 
-type SymbolType int
-
-const (
-	Digit SymbolType = iota
-	LowerCase
-	UpperCase
-)
-
 type RandGenParam struct {
-	Entity SymbolType
 	Dictionary []string
 }
 
@@ -33,9 +24,9 @@ func Generate(config password.PasswordConfig) string {
 	rand.Seed(time.Now().UnixNano())
 
 	genParams := make([]*RandGenParam, 0)
-	if config.UseDigits { genParams = append(genParams, &RandGenParam{Digit, Digits}) }
-	if config.UseLowercase { genParams = append(genParams, &RandGenParam{LowerCase, AlphabetLower}) }
-	if config.UseUppercase { genParams = append(genParams, &RandGenParam{UpperCase, AlphabetUpper}) }
+	if config.UseDigits { genParams = append(genParams, &RandGenParam{Digits}) }
+	if config.UseLowercase { genParams = append(genParams, &RandGenParam{AlphabetLower}) }
+	if config.UseUppercase { genParams = append(genParams, &RandGenParam{AlphabetUpper}) }
 
 	for index, _ := range password {
 		if len(genParams) == 0 { break }
@@ -57,14 +48,7 @@ func GenNextSymbol(params *RandGenParam) string {
 	dic := params.Dictionary
 	var nextSymbol string
 	randomizedNumber := rand.Intn(len(dic))
-	switch params.Entity {
-		case Digit:
-			nextSymbol = dic[randomizedNumber]
-		case LowerCase:
-			nextSymbol = string('a' + randomizedNumber)
-		case UpperCase:
-			nextSymbol = strings.ToUpper(string('a' + randomizedNumber))
-	}
+	nextSymbol = dic[randomizedNumber]
 	params.Dictionary = append(dic[:randomizedNumber], dic[randomizedNumber+1:]...)
 	return nextSymbol
 }

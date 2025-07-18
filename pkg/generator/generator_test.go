@@ -1,4 +1,4 @@
-package generator
+package generator_test
 
 import(
 	"testing"
@@ -15,7 +15,7 @@ func Test_Generate(t *testing.T) {
 	}
 }
 func Test_GenNextSymbol(t *testing.T) {
-	conf := generator.RandGenParam{generator.Digit, generator.Digits}
+	conf := generator.RandGenParam{generator.Digits}
 
 
 	output := generator.GenNextSymbol(&conf)
